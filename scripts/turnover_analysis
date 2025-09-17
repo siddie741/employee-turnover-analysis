@@ -1,0 +1,29 @@
+library(tidyverse)
+
+# load kaggle dataset
+hr <- read.csv("data/WA_Fn-UseC_-HR-Employee-Attrition.csv")
+
+# view data
+glimpse(hr)
+
+#find rate of attrition
+table(hr$Attrition)
+
+# job role attrition
+hr %>%
+  group_by(JobRole) %>%
+  summarise(attrition_rate = mean(Attrition == "Yes")) %>%
+  arrange(desc(attrition_rate))
+
+# department attrition
+ggplot(hr, aes(x=Department, fill=Attrition)) +
+  geom_bar(position="fill") +
+  labs(title="Attrition by Department", y="Proportion")
+
+# logistic regression
+model <- glm(Attrition ~ Age + JobSatisfaction + MonthlyIncome,
+             data=hr, family="binomial")
+
+summary(model)
+
+
